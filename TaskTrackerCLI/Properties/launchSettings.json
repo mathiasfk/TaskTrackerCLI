@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "TaskTrackerCLI": {
+      "commandName": "Project",
+      "commandLineArgs": "add Something"
+    }
+  }
+}
