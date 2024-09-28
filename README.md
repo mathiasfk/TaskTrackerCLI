@@ -1,4 +1,4 @@
-# TestTrackerCLI
+# TaskTrackerCLI
 
 Basic task tracker CLI project, inspired by https://roadmap.sh/projects/task-tracker.
 

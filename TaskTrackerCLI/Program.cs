@@ -30,7 +30,7 @@ else
 }
 
 // PARSE
-int Id = 0;
+int id = 0;
 string description = "";
 string status = "";
 
@@ -38,8 +38,12 @@ switch (args[0])
 {
     case CMD_ADD:
         description = args[1];
-        Id = maxID + 1;
+        id = maxID + 1;
         status = "new";
+        break;
+    case CMD_UPDATE:
+        id = int.Parse(args[1]);
+        description = args[2];
         break;
     default:
         Console.WriteLine("Invalid command");
@@ -52,12 +56,18 @@ switch (args[0])
     case CMD_ADD:
         var newTask = new TaskRecord()
         {
-            Id = Id,
+            Id = id,
             Description = description,
             Status = status
         };
         tasks.Add(newTask);
         break;
+
+    case CMD_UPDATE:
+        var updatedTask = tasks.Where(r => r.Id == id).FirstOrDefault();
+        updatedTask.Description = description;
+        break;
+
     default:
         Console.WriteLine("Invalid command");
         break;
