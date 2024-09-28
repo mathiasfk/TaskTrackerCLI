@@ -39,12 +39,34 @@ switch (args[0])
     case CMD_ADD:
         description = args[1];
         id = maxID + 1;
-        status = "new";
+        status = "todo";
         break;
+
     case CMD_UPDATE:
         id = int.Parse(args[1]);
         description = args[2];
         break;
+
+    case CMD_DELETE:
+        id = int.Parse(args[1]);
+        break;
+
+    case CMD_LIST:
+        if(args.Length > 1){
+            status = args[1];
+        }
+        break;
+
+    case CMD_MARK_IN_PROGRESS:
+        id = int.Parse(args[1]);
+        status = "in-progress";
+        break;
+
+    case CMD_MARK_DONE:
+        id = int.Parse(args[1]);
+        status = "done";
+        break;
+
     default:
         Console.WriteLine("Invalid command");
         return;
@@ -68,6 +90,24 @@ switch (args[0])
         updatedTask.Description = description;
         break;
 
+    case CMD_DELETE:
+        tasks.RemoveAll(r => r.Id == id);
+        break;
+
+    case CMD_LIST:
+        var filteredTasks = tasks.Where(r => status == "" || r.Status.Equals(status));
+        foreach(var task in filteredTasks)
+        {
+            Console.WriteLine($"{task.Id} - {task.Description} [{task.Status}]");
+        }
+        break;
+
+    case CMD_MARK_IN_PROGRESS:
+    case CMD_MARK_DONE:
+        var changeStatusTask = tasks.Where(r => r.Id == id).FirstOrDefault();
+        changeStatusTask.Status = status;
+        break;
+
     default:
         Console.WriteLine("Invalid command");
         break;
@@ -76,5 +116,4 @@ switch (args[0])
 
 // FLUSH
 string outputString = JsonSerializer.Serialize(tasks);
-Console.WriteLine(outputString);
 File.WriteAllText(filename, outputString);
