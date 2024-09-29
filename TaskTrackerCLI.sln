@@ -5,6 +5,10 @@ VisualStudioVersion = 17.11.35303.130
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskTrackerCLI", "TaskTrackerCLI\TaskTrackerCLI.csproj", "{6064EC4C-ADD5-43A3-8134-7BCD9EAD93AE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "Core\Core.csproj", "{F6F66A41-3E00-4450-A724-B8F99C1C0FD4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Adapters", "Adapters\Adapters.csproj", "{D6FC736C-CE6B-4D2A-BD19-A9B7E98ED3B4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{6064EC4C-ADD5-43A3-8134-7BCD9EAD93AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6064EC4C-ADD5-43A3-8134-7BCD9EAD93AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6064EC4C-ADD5-43A3-8134-7BCD9EAD93AE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F6F66A41-3E00-4450-A724-B8F99C1C0FD4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F6F66A41-3E00-4450-A724-B8F99C1C0FD4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F6F66A41-3E00-4450-A724-B8F99C1C0FD4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F6F66A41-3E00-4450-A724-B8F99C1C0FD4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D6FC736C-CE6B-4D2A-BD19-A9B7E98ED3B4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D6FC736C-CE6B-4D2A-BD19-A9B7E98ED3B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D6FC736C-CE6B-4D2A-BD19-A9B7E98ED3B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D6FC736C-CE6B-4D2A-BD19-A9B7E98ED3B4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
