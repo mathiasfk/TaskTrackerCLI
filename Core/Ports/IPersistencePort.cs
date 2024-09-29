@@ -10,8 +10,6 @@ namespace Core.Ports
 
         public Task<List<TaskItem>> GetAll();
 
-        public Task<List<TaskItem>> GetFilteredByStatus(Status filter);
-
         public Task Add(TaskItem item);
 
         public Task Remove(TaskItem item);

@@ -49,7 +49,12 @@ namespace Core.UseCases
 
         private async Task ListCommand(Command command)
         {
+
             var list = await _persistencePort.GetAll();
+            if(command.Status.HasValue)
+            {
+                list = list.Where(x => x.Status == command.Status).ToList();
+            }
             await _outputPort.SendList(list);
         }
     }

@@ -51,11 +51,6 @@ namespace Adapters.Persistence.JsonFile
             return Task.FromResult(tasks);
         }
 
-        public Task<List<TaskItem>> GetFilteredByStatus(Status filter)
-        {
-            throw new NotImplementedException();
-        }
-
         public Task Remove(TaskItem item)
         {
             throw new NotImplementedException();
