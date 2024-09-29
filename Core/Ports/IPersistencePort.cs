@@ -4,9 +4,13 @@ namespace Core.Ports
 {
     public interface IPersistencePort
     {
+        public Task<int> GetLatestID();
+
         public Task<TaskItem?> GetByID(int id);
 
-        public Task<int> GetLatestID();
+        public Task<List<TaskItem>> GetAll();
+
+        public Task<List<TaskItem>> GetFilteredByStatus(Status filter);
 
         public Task Add(TaskItem item);
 

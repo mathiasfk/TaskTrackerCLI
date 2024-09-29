@@ -3,7 +3,7 @@ using Core.Ports;
 
 namespace Core.UseCases
 {
-    public class CommandProcessor: ICommandProcessor
+    public class CommandProcessor : ICommandProcessor
     {
         private IPersistencePort _persistencePort;
         private IOutputPort _outputPort;
@@ -21,8 +21,11 @@ namespace Core.UseCases
                 case CommandVerb.Add:
                     await AddCommand(command);
                     break;
+                case CommandVerb.List:
+                    await ListCommand(command);
+                    break;
                 default:
-                    throw new NotImplementedException("This command is not implemented");                    
+                    throw new NotImplementedException("This command is not implemented");
             }
         }
 
@@ -42,6 +45,12 @@ namespace Core.UseCases
             };
 
             await _persistencePort.Add(item);
+        }
+
+        private async Task ListCommand(Command command)
+        {
+            var list = await _persistencePort.GetAll();
+            await _outputPort.SendList(list);
         }
     }
 }

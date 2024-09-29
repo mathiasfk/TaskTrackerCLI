@@ -105,5 +105,22 @@ namespace Core.Test.UseCases
             // Assert
             _ = _persistencePort.Received(1).Add(Arg.Is<TaskItem>(item => item.Id == 1));
         }
+
+        [TestMethod]
+        public async Task List_WithoutHistory_ShouldSendEmptyListAsync()
+        {
+            // Arrange
+            var command = new Command()
+            {
+                Verb = CommandVerb.List
+            };
+            _persistencePort.GetAll().Returns(new List<TaskItem>());
+
+            // Act
+            await _commandProcessor.ProcessCommandAsync(command);
+
+            // Assert
+            _ = _outputPort.Received(1).SendList(Arg.Is<List<TaskItem>>(list => list.Count == 0));
+        }
     }
 }

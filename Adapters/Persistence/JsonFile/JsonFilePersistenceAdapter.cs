@@ -14,6 +14,15 @@ namespace Adapters.Persistence.JsonFile
             _tasks = LoadFromFile();
         }
 
+        public async Task<int> GetLatestID()
+        {
+            if (_tasks.Count == 0)
+            {
+                return -1;
+            }
+            return await Task.Run(() => _tasks.Max(r => r.Id));
+        }
+
         public async Task<TaskItem?> GetByID(int id)
         {
             var jsonItem = await Task.Run(() => _tasks.FirstOrDefault(r => r.Id == id));
@@ -30,13 +39,21 @@ namespace Adapters.Persistence.JsonFile
             }
         }
 
-        public async Task<int> GetLatestID()
+        public Task<List<TaskItem>> GetAll()
         {
-            if(_tasks.Count == 0)
+            var tasks = new List<TaskItem>();
+            foreach (var jsonTask in _tasks)
             {
-                return -1;
+                var task = (TaskItem?)jsonTask;
+                if(task != null)
+                    tasks.Add(task);
             }
-            return await Task.Run(() => _tasks.Max(r => r.Id));
+            return Task.FromResult(tasks);
+        }
+
+        public Task<List<TaskItem>> GetFilteredByStatus(Status filter)
+        {
+            throw new NotImplementedException();
         }
 
         public Task Remove(TaskItem item)
