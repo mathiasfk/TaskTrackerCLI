@@ -11,7 +11,7 @@ namespace Adapters.Persistence.JsonFile
 
         public JsonFilePersistenceAdapter()
         {
-            _tasks = LoadFromFile(_fileName);
+            _tasks = LoadFromFile();
         }
 
         public async Task<TaskItem?> GetByID(int id)
@@ -20,9 +20,23 @@ namespace Adapters.Persistence.JsonFile
             return (TaskItem?)jsonItem;
         }
 
-        public Task Add(TaskItem item)
+        public async Task Add(TaskItem item)
         {
-            throw new NotImplementedException();
+            var jsonItem = (JsonFileTaskItem?)item;
+            if(jsonItem != null)
+            {
+                _tasks.Add(jsonItem);
+                await Task.Run(() => StoreIntoFile());
+            }
+        }
+
+        public async Task<int> GetLatestID()
+        {
+            if(_tasks.Count == 0)
+            {
+                return -1;
+            }
+            return await Task.Run(() => _tasks.Max(r => r.Id));
         }
 
         public Task Remove(TaskItem item)
@@ -35,14 +49,14 @@ namespace Adapters.Persistence.JsonFile
             throw new NotImplementedException();
         }
 
-        private static List<JsonFileTaskItem> LoadFromFile(string filename)
+        private List<JsonFileTaskItem> LoadFromFile()
         {
             List<JsonFileTaskItem>? list = null;
-            if (File.Exists(filename))
+            if (File.Exists(_fileName))
             {
                 try
                 {
-                    string jsonString = File.ReadAllText(filename);
+                    string jsonString = File.ReadAllText(_fileName);
                     list = JsonSerializer.Deserialize<List<JsonFileTaskItem>>(jsonString);
                 }
                 catch (Exception)
@@ -50,6 +64,12 @@ namespace Adapters.Persistence.JsonFile
                 }
             }
             return list ?? [];
+        }
+
+        private void StoreIntoFile()
+        {
+            string outputString = JsonSerializer.Serialize(_tasks);
+            File.WriteAllText(_fileName, outputString);
         }
     }
 }

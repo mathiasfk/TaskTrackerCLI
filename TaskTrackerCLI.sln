@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35303.130
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Host.CLI", "TaskTrackerCLI\Host.CLI.csproj", "{6064EC4C-ADD5-43A3-8134-7BCD9EAD93AE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskTrackerHost.CLI", "TaskTrackerCLI\TaskTrackerHost.CLI.csproj", "{6064EC4C-ADD5-43A3-8134-7BCD9EAD93AE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "Core\Core.csproj", "{F6F66A41-3E00-4450-A724-B8F99C1C0FD4}"
 EndProject

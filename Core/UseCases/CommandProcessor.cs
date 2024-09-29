@@ -16,8 +16,27 @@ namespace Core.UseCases
 
         public async Task ProcessCommandAsync(Command command)
         {
-            var item = new TaskItem {
-                Id = 123,
+            switch (command.Verb)
+            {
+                case CommandVerb.Add:
+                    await AddCommand(command);
+                    break;
+                default:
+                    throw new NotImplementedException("This command is not implemented");                    
+            }
+        }
+
+        private async Task AddCommand(Command command)
+        {
+            var maxId = await _persistencePort.GetLatestID();
+            if (maxId <= 0)
+            {
+                maxId = 0;
+            }
+
+            var item = new TaskItem
+            {
+                Id = maxId + 1,
                 Description = command.Description ?? "",
                 Status = Status.ToDo
             };

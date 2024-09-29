@@ -27,22 +27,57 @@ namespace Adapters.Persistence.JsonFile
             {
                 Id = item.Id,
                 Description = item.Description,
-                Status = ToDo
+                Status = ConvertStatus(item.Status)
             };
 
-            switch (item.Status)
+            return taskItem;
+        }
+
+        public static explicit operator JsonFileTaskItem?(TaskItem? item)
+        {
+            if (item is null)
             {
-                case "todo":
-                    taskItem.Status = ToDo; break;
-                case "in-progress":
-                    taskItem.Status = InProgress; break;
-                case "done":
-                    taskItem.Status = InProgress; break;
-                default:
-                    throw new Exception("corrupted persistence file");
+                return null;
             }
 
+            var taskItem = new JsonFileTaskItem
+            {
+                Id = item.Id,
+                Description = item.Description,
+                Status = ConvertStatus(item.Status)
+            };
+
             return taskItem;
+        }
+
+        private static Status ConvertStatus(string status)
+        {
+            switch (status)
+            {
+                case "todo":
+                    return ToDo;
+                case "in-progress":
+                    return InProgress;
+                case "done":
+                    return Done;
+                default:
+                    throw new Exception("Corrupted persistence file");
+            }
+        }
+
+        private static string ConvertStatus(Status status)
+        {
+            switch (status)
+            {
+                case ToDo:
+                    return "todo";
+                case InProgress:
+                    return "in-progress";
+                case Done:
+                    return "done";
+                default:
+                    throw new Exception("Invalid Status");
+            }
         }
     }
 }

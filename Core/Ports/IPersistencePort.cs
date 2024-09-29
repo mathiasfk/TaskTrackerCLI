@@ -6,6 +6,8 @@ namespace Core.Ports
     {
         public Task<TaskItem?> GetByID(int id);
 
+        public Task<int> GetLatestID();
+
         public Task Add(TaskItem item);
 
         public Task Remove(TaskItem item);
