@@ -15,7 +15,7 @@ namespace TaskTrackerCLI
             CancellationToken cancellationToken)
         {
             Console.WriteLine("Hello, internet!");
-            await _commandProcessor.ProcessCommand(new Command() { Description = "Hello World"});
+            await _commandProcessor.ProcessCommandAsync(new Command() { Description = "Hello World"});
         }
     }
 }

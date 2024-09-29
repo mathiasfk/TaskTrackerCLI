@@ -14,17 +14,14 @@ namespace Core.UseCases
             _outputPort = outputPort;
         }
 
-        public async Task ProcessCommand(Command command)
+        public async Task ProcessCommandAsync(Command command)
         {
-            var list = new List<TaskItem>();
             var item = new TaskItem {
                 Id = 123,
-                Description = "Buy groceries",
+                Description = command.Description ?? "",
                 Status = Status.ToDo
             };
-            list.Add(item);
 
-            await _outputPort.SendList(list);
             await _persistencePort.Add(item);
         }
     }

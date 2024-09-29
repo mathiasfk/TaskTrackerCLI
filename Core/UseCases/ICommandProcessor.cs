@@ -1,14 +1,9 @@
 ﻿using Core.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Core.UseCases
 {
     public interface ICommandProcessor
     {
-        Task ProcessCommand(Command command);
+        Task ProcessCommandAsync(Command command);
     }
 }
