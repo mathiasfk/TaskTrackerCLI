@@ -27,6 +27,9 @@ namespace Core.UseCases
                 case CommandVerb.List:
                     await ListCommand(command);
                     break;
+                case CommandVerb.Delete:
+                    await DeleteCommand(command);
+                    break;
                 default:
                     throw new NotImplementedException("This command is not implemented");
             }
@@ -82,6 +85,21 @@ namespace Core.UseCases
                 list = list.Where(x => x.Status == command.Status).ToList();
             }
             await _outputPort.SendList(list);
+        }
+
+        private async Task DeleteCommand(Command command)
+        {
+            if (command.Id == null)
+            {
+                throw new ArgumentException("Command Id cannot be null for delete operation");
+            }
+
+            var item = await _persistencePort.GetByID(command.Id.Value);
+            if (item == null)
+            {
+                throw new InvalidOperationException("TaskItem not found");
+            }
+            await _persistencePort.Remove(item);
         }
     }
 }

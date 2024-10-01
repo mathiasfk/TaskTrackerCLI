@@ -204,7 +204,7 @@ namespace Core.Test.UseCases
         }
 
         [TestMethod]
-        public async Task Update_WithItemSaved_ShouldSucceedAsync()
+        public async Task Update_ExistingItem_ShouldSucceedAsync()
         {
             // Arrange
             var id = 123;
@@ -232,7 +232,7 @@ namespace Core.Test.UseCases
         }
 
         [TestMethod]
-        public async Task Update_WithUnexistantItem_ShouldFailAsync()
+        public async Task Update_UnexistantItem_ShouldFailAsync()
         {
             // Arrange
             var id = 123;
@@ -275,6 +275,65 @@ namespace Core.Test.UseCases
             var command = new Command()
             {
                 Verb = CommandVerb.Update,
+            };
+
+            // Act / Assert
+            await Assert.ThrowsExceptionAsync<ArgumentException>(
+                async () => await _commandProcessor.ProcessCommandAsync(command)
+            );
+        }
+
+        [TestMethod]
+        public async Task Delete_ExistingItem_ShouldSucceedAsync()
+        {
+            // Arrange
+            var id = 123;
+            _persistencePort.GetByID(Arg.Any<int>()).Returns(new TaskItem()
+            {
+                Id = id,
+                Description = "description",
+                Status = Status.ToDo
+            });
+
+            var command = new Command()
+            {
+                Verb = CommandVerb.Delete,                
+                Id = id
+            };
+
+            // Act
+            await _commandProcessor.ProcessCommandAsync(command);
+
+            // Assert
+            _ = _persistencePort.Received(1).Remove(Arg.Is<TaskItem>(item => item.Id == id));
+        }
+
+        [TestMethod]
+        public async Task Delete_UnexistantItem_ShouldFailAsync()
+        {
+            // Arrange
+            var id = 123;
+
+            var command = new Command()
+            {
+                Verb = CommandVerb.Delete,
+                Description = "description",
+                Id = id
+            };
+
+            // Act / Assert
+            await Assert.ThrowsExceptionAsync<InvalidOperationException>(
+                async () => await _commandProcessor.ProcessCommandAsync(command)
+            );
+        }
+
+        [TestMethod]
+        public async Task Delete_WithoutId_ShouldFailAsync()
+        {
+            // Arrange
+            var command = new Command()
+            {
+                Verb = CommandVerb.Delete,
             };
 
             // Act / Assert

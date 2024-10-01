@@ -51,14 +51,22 @@ namespace Adapters.Persistence.JsonFile
             return Task.FromResult(tasks);
         }
 
-        public Task Remove(TaskItem item)
+        public async Task Remove(TaskItem item)
         {
-            throw new NotImplementedException();
+            await Task.Run(() => _tasks.RemoveAll(r => r.Id == item.Id));
+            await Task.Run(() => StoreIntoFile());
         }
 
-        public Task Update(TaskItem item)
+        public async Task Update(TaskItem item)
         {
-            throw new NotImplementedException();
+            var task = _tasks.FirstOrDefault(r => r.Id == item.Id);
+            if (task != null)
+            {
+                task.Description = item.Description;
+                task.Status = item.Status.ToString().ToLower();
+
+                await Task.Run(() => StoreIntoFile());
+            }
         }
 
         private List<JsonFileTaskItem> LoadFromFile()
