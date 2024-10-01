@@ -21,6 +21,9 @@ namespace Core.UseCases
                 case CommandVerb.Add:
                     await AddCommand(command);
                     break;
+                case CommandVerb.Update:
+                    await UpdateCommand(command);
+                    break;
                 case CommandVerb.List:
                     await ListCommand(command);
                     break;
@@ -45,6 +48,29 @@ namespace Core.UseCases
             };
 
             await _persistencePort.Add(item);
+        }
+
+        private async Task UpdateCommand(Command command)
+        {
+            if (command.Id == null)
+            {
+                throw new ArgumentException("Command Id cannot be null for update operation");
+            }
+
+            if (command.Description == null)
+            {
+                throw new ArgumentException("Description cannot be null for update operation");
+            }
+
+            var item = await _persistencePort.GetByID(command.Id.Value);
+            if (item == null)
+            {
+                throw new InvalidOperationException("TaskItem not found");
+            }
+
+            item.Description = command.Description;
+
+            await _persistencePort.Update(item);
         }
 
         private async Task ListCommand(Command command)

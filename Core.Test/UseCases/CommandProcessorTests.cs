@@ -21,7 +21,7 @@ namespace Core.Test.UseCases
         }
 
         [TestMethod]
-        public async Task AddItem_WithDescription_ShouldSucceedAsync()
+        public async Task Add_WithDescription_ShouldSucceedAsync()
         {
             // Arrange
             var description = "Test item";
@@ -39,7 +39,7 @@ namespace Core.Test.UseCases
         }
 
         [TestMethod]
-        public async Task AddItem_WithoutDescription_ShouldSucceedAsync()
+        public async Task Add_WithoutDescription_ShouldSucceedAsync()
         {
             // Arrange
             var command = new Command()
@@ -55,7 +55,7 @@ namespace Core.Test.UseCases
         }
 
         [TestMethod]
-        public async Task AddItem_WithoutPreviousHistory_ShouldReceiveIdOneAsync()
+        public async Task Add_WithoutPreviousHistory_ShouldReceiveIdOneAsync()
         {
             // Arrange
             var command = new Command()
@@ -71,7 +71,7 @@ namespace Core.Test.UseCases
         }
 
         [TestMethod]
-        public async Task AddItem_WithPreviousHistory_ShouldReceiveHigherIdAsync()
+        public async Task Add_WithPreviousHistory_ShouldReceiveHigherIdAsync()
         {
             // Arrange
             var previousId = 456;
@@ -89,7 +89,7 @@ namespace Core.Test.UseCases
         }
 
         [TestMethod]
-        public async Task AddItem_WithPreviousNegativeId_ShouldReceiveIdOneAsync()
+        public async Task Add_WithPreviousNegativeId_ShouldReceiveIdOneAsync()
         {
             // Arrange
             var previousId = -1;
@@ -98,6 +98,23 @@ namespace Core.Test.UseCases
                 Verb = CommandVerb.Add
             };
             _persistencePort.GetLatestID().Returns(previousId);
+
+            // Act
+            await _commandProcessor.ProcessCommandAsync(command);
+
+            // Assert
+            _ = _persistencePort.Received(1).Add(Arg.Is<TaskItem>(item => item.Id == 1));
+        }
+
+        [TestMethod]
+        public async Task Add_WithId_ShouldIgnoreIdAsync()
+        {
+            // Arrange
+            var command = new Command()
+            {
+                Verb = CommandVerb.Add,
+                Id = 123
+            };
 
             // Act
             await _commandProcessor.ProcessCommandAsync(command);
@@ -184,6 +201,86 @@ namespace Core.Test.UseCases
 
             // Assert
             _ = _outputPort.Received(1).SendList(Arg.Is<List<TaskItem>>(list => list.Count == 1));
+        }
+
+        [TestMethod]
+        public async Task Update_WithItemSaved_ShouldSucceedAsync()
+        {
+            // Arrange
+            var id = 123;
+            var oldDescription = "Old description";
+            var newDescription = "New description";
+
+            _persistencePort.GetByID(Arg.Any<int>()).Returns(new TaskItem() { 
+                Id = id,
+                Description = oldDescription,
+                Status = Status.ToDo
+            });
+
+            var command = new Command()
+            {
+                Verb = CommandVerb.Update,
+                Description = newDescription,
+                Id = id
+            };
+
+            // Act
+            await _commandProcessor.ProcessCommandAsync(command);
+
+            // Assert
+            _ = _persistencePort.Received(1).Update(Arg.Is<TaskItem>(item => item.Description == newDescription));
+        }
+
+        [TestMethod]
+        public async Task Update_WithUnexistantItem_ShouldFailAsync()
+        {
+            // Arrange
+            var id = 123;
+            var newDescription = "New description";
+
+            var command = new Command()
+            {
+                Verb = CommandVerb.Update,
+                Description = newDescription,
+                Id = id
+            };
+
+            // Act / Assert
+            await Assert.ThrowsExceptionAsync<InvalidOperationException>(
+                async () => await _commandProcessor.ProcessCommandAsync(command)
+            );
+        }
+
+        [TestMethod]
+        public async Task Update_WithoutDescription_ShouldFailAsync()
+        {
+            // Arrange
+            var id = 123;
+            var command = new Command()
+            {
+                Verb = CommandVerb.Update,
+                Id = id
+            };
+
+            // Act / Assert
+            await Assert.ThrowsExceptionAsync<ArgumentException>(
+                async () => await _commandProcessor.ProcessCommandAsync(command)
+            );
+        }
+
+        [TestMethod]
+        public async Task Update_WithoutId_ShouldFailAsync()
+        {
+            // Arrange
+            var command = new Command()
+            {
+                Verb = CommandVerb.Update,
+            };
+
+            // Act / Assert
+            await Assert.ThrowsExceptionAsync<ArgumentException>(
+                async () => await _commandProcessor.ProcessCommandAsync(command)
+            );
         }
     }
 }
