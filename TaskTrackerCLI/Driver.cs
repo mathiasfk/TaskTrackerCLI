@@ -24,28 +24,40 @@ namespace TaskTrackerHost.CLI
 
         private Command ParseArguments(string[] args)
         {
-            var command = new Command();
+            Command command;
             switch (args[0])
             {
                 case CMD_ADD:
-                    command.Verb = CommandVerb.Add;
-                    command.Description = args[1];
-                    command.Status = Status.ToDo;
+                    command = new()
+                    {
+                        Verb = CommandVerb.Add,
+                        Description = args[1],
+                        Status = Status.ToDo
+                    };
                     break;
 
                 case CMD_UPDATE:
-                    command.Verb = CommandVerb.Update;
-                    command.Id = int.Parse(args[1]);
-                    command.Description = args[2];
+                    command = new()
+                    {
+                        Verb = CommandVerb.Update,
+                        Id = int.Parse(args[1]),
+                        Description = args[2]
+                    };
                     break;
 
                 case CMD_DELETE:
-                    command.Verb = CommandVerb.Delete;
-                    command.Id = int.Parse(args[1]);
+                    command = new()
+                    { 
+                        Verb = CommandVerb.Delete,
+                        Id = int.Parse(args[1])
+                    };
                     break;
 
                 case CMD_LIST:
-                    command.Verb = CommandVerb.List;
+                    command = new()
+                    {
+                        Verb = CommandVerb.List,
+                    };
                     if (args.Length > 1)
                     {
                         command.Status = ParseStatus(args[1]);
@@ -53,13 +65,21 @@ namespace TaskTrackerHost.CLI
                     break;
 
                 case CMD_MARK_IN_PROGRESS:
-                    command.Id = int.Parse(args[1]);
-                    command.Status = Status.InProgress;
+                    command = new()
+                    {
+                        Verb = CommandVerb.Mark,
+                        Id = int.Parse(args[1]),
+                        Status = Status.InProgress
+                    };
                     break;
 
                 case CMD_MARK_DONE:
-                    command.Id = int.Parse(args[1]);
-                    command.Status = Status.Done;
+                    command = new()
+                    {
+                        Verb = CommandVerb.Mark,
+                        Id = int.Parse(args[1]),
+                        Status = Status.Done
+                    };
                     break;
 
                 default:

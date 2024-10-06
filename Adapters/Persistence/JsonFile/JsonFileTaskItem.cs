@@ -56,7 +56,7 @@ namespace Adapters.Persistence.JsonFile
             {
                 case "todo":
                     return ToDo;
-                case "in-progress":
+                case "inprogress":
                     return InProgress;
                 case "done":
                     return Done;
@@ -72,7 +72,7 @@ namespace Adapters.Persistence.JsonFile
                 case ToDo:
                     return "todo";
                 case InProgress:
-                    return "in-progress";
+                    return "inprogress";
                 case Done:
                     return "done";
                 default:

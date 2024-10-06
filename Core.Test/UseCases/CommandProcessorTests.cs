@@ -341,5 +341,87 @@ namespace Core.Test.UseCases
                 async () => await _commandProcessor.ProcessCommandAsync(command)
             );
         }
+
+        [TestMethod]
+        public async Task Mark_ExistingItem_ShouldSucceedAsync()
+        {
+            // Arrange
+            var id = 123;
+            var oldStatus = Status.ToDo;
+            var newStatus = Status.InProgress;
+
+            _persistencePort.GetByID(Arg.Any<int>()).Returns(new TaskItem()
+            {
+                Id = id,
+                Description = "Some description",
+                Status = oldStatus
+            });
+
+            var command = new Command()
+            {
+                Verb = CommandVerb.Mark,
+                Status = newStatus,
+                Id = id
+            };
+
+            // Act
+            await _commandProcessor.ProcessCommandAsync(command);
+
+            // Assert
+            _ = _persistencePort.Received(1).Update(Arg.Is<TaskItem>(item => item.Status == newStatus));
+        }
+
+        [TestMethod]
+        public async Task Mark_UnexistantItem_ShouldFailAsync()
+        {
+            // Arrange
+            var id = 123;
+            var newStatus = Status.Done;
+
+            var command = new Command()
+            {
+                Verb = CommandVerb.Mark,
+                Status = newStatus,
+                Id = id
+            };
+
+            // Act / Assert
+            await Assert.ThrowsExceptionAsync<InvalidOperationException>(
+                async () => await _commandProcessor.ProcessCommandAsync(command)
+            );
+        }
+
+        [TestMethod]
+        public async Task Mark_WithoutStatus_ShouldFailAsync()
+        {
+            // Arrange
+            var id = 123;
+            var command = new Command()
+            {
+                Verb = CommandVerb.Mark,
+                Id = id
+            };
+
+            // Act / Assert
+            await Assert.ThrowsExceptionAsync<ArgumentException>(
+                async () => await _commandProcessor.ProcessCommandAsync(command)
+            );
+        }
+
+        [TestMethod]
+        public async Task Mark_WithoutId_ShouldFailAsync()
+        {
+            // Arrange
+            var command = new Command()
+            {
+                Verb = CommandVerb.Mark,
+                Status = Status.Done
+            };
+
+            // Act / Assert
+            await Assert.ThrowsExceptionAsync<ArgumentException>(
+                async () => await _commandProcessor.ProcessCommandAsync(command)
+            );
+        }
     }
 }

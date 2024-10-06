@@ -30,6 +30,9 @@ namespace Core.UseCases
                 case CommandVerb.Delete:
                     await DeleteCommand(command);
                     break;
+                case CommandVerb.Mark:
+                    await MarkCommand(command);
+                    break;
                 default:
                     throw new NotImplementedException("This command is not implemented");
             }
@@ -101,5 +104,29 @@ namespace Core.UseCases
             }
             await _persistencePort.Remove(item);
         }
+
+        private async Task MarkCommand(Command command)
+        {
+            if (command.Id == null)
+            {
+                throw new ArgumentException("Command Id cannot be null for mark operation");
+            }
+
+            if (command.Status == null)
+            {
+                throw new ArgumentException("Status cannot be null for mark operation");
+            }
+
+            var item = await _persistencePort.GetByID(command.Id.Value);
+            if (item == null)
+            {
+                throw new InvalidOperationException("TaskItem not found");
+            }
+
+            item.Status = command.Status.Value;
+
+            await _persistencePort.Update(item);
+        }
+
     }
 }
